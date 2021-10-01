@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import math
+from rules import basic_strat
 
 
 # Rules
@@ -52,13 +53,15 @@ class Hand:
     """
     Class for hand
     """
-    def __init__(self, cards):
+    def __init__(self, cards, dealer=10, decks=2):
         """
         :param cards: list - list of cards in hand
         """
         self.hand = cards
+        self.dealer = dealer
         self.htype = self.hand_type()
         self.total = self.hand_sum()
+        self.decks_n = decks
         # self.status = 1
 
     def hand_type(self):
@@ -121,15 +124,29 @@ class Hand:
         self.total = self.hand_sum()
         return pop
 
+    def action(self):
+        """
+        Recommend action
+
+        :return: str - optimal action
+        """
+        action_space = {1: "Hit", 2: 'Stand', 3: 'Double', 4: 'Split'}
+        basic_df = basic_strat.groupby("deck").get_group(self.decks_n)
+        filtered = basic_df[(basic_df['sum'] == self.total) & (basic_df['type'] == self.htype)]
+        return action_space[filtered[self.dealer].values[0]]
+
 
 # debug Class Game
 game1 = Game(2)
 game1.update(10)
 game1.update(10)
-bet = game1.bet_size()
-print(bet)
+
+# get betting size
+print(game1.bet_size())
 
 # debug Class Hand
-hand1 = Hand([5, 6, 10])
-print(hand1.htype)
-print(hand1.total)
+
+# instantiate hand
+hand1 = Hand([5, 6, 10], dealer=2, decks=2)
+# get action
+print(hand1.action())
