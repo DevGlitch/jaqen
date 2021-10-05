@@ -15,7 +15,7 @@ import time
 import numpy as np
 
 
-def img_object_detection(img_path):
+def img_object_detection_txt(img_path):
     """Running YOLO on an image to detect objects
     :param img_path: path of image to analyse
     :return: object(s) detected
@@ -32,9 +32,8 @@ def img_object_detection(img_path):
 
     # Using Common Objects in Context (COCO) Labels
     # (https://cocodataset.org/)
-    coco_label = (
-        open("object_detection/yolo/coco/coco.names").read().strip().split("\n")
-    )
+    coco = open("object_detection/yolo/coco/coco.names")
+    coco_label = coco.read().strip().split("\n")
 
     # Reads image from provided path
     read_img = cv2.imread(img_path)
@@ -55,7 +54,7 @@ def img_object_detection(img_path):
 
     # Timing network output
     time_start = time.perf_counter()
-    print("Starting YOLO analysis...")
+    print("\nStarting YOLO analysis...")
     outputs = net.forward(layer_name)
     time_stop = time.perf_counter() - time_start
     print(f"YOLO ran for: {time_stop:.2f}s")
@@ -113,9 +112,11 @@ def img_object_detection(img_path):
         # List all objects found even if the label is the same
         # e.g. if two dogs are detected it will list dog twice
         print("The objects are:\n", objects)
+        coco.close()
         return objects
 
     # If no object has been detected
     else:
         print("No object detected in the picture.")
+        coco.close()
         pass

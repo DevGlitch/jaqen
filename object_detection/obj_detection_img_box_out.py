@@ -15,7 +15,7 @@ import time
 import numpy as np
 
 
-def img_object_detection(img_path):
+def img_object_detection_box(img_path):
     """Running YOLO on an image to detect objects
     :param img_path: path of image to analyse
     :return: object(s) detected
@@ -32,9 +32,8 @@ def img_object_detection(img_path):
 
     # Using Common Objects in Context (COCO) Labels
     # (https://cocodataset.org/)
-    coco_label = (
-        open("object_detection/yolo/coco/coco.names").read().strip().split("\n")
-    )
+    coco = open("object_detection/yolo/coco/coco.names")
+    coco_label = coco.read().strip().split("\n")
 
     # initialize a list of colors to represent each possible class label
     np.random.seed(14)
@@ -124,6 +123,8 @@ def img_object_detection(img_path):
     else:
         print("No object detected in the picture.")
         pass
+
+    coco.close()
 
     # Open image to show the output with detected objects
     cv2.imshow("Image", read_img)
