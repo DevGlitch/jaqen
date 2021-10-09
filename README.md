@@ -1,9 +1,11 @@
-# ... - Team Jaqen
+# Blackbeard - Team Jaqen
 
 ![Python version](https://img.shields.io/badge/python-v3.7-blue)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 ![GitHub contributors](https://img.shields.io/github/contributors/DevGlitch/jaqen)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+
+###!! Currently in development !!
 
 Team Members:
    * Nicolas Morant aka DevGlitch
@@ -14,28 +16,31 @@ Team Members:
 <br />
 <p align="center">
   <a href="https://github.com/DevGlitch/jaqen">
-    <img src="images/....png" alt="Logo" height="300">
+    <img src="images/blackbeard_logo.png" alt="Blackbeard logo" height="300">
   </a>
 </p>
 
 
 <!-- DESCRIPTION OF THE PROJECT -->
 ## Description
-We wanted to build a ...
+Team Jaqen wants to build Blackbeard, a world class blackjack AI, that trains your ability to play blackjack 
+from a wearable device in real time. The challenges Blackbeard will face are as follow: object detection, 
+object classification, mathematical probabilities, hand motion recognition, and more.
 
+Disclaimer: The device is intended for academic use or training purposes only. Card counting is not illegal under Federal, State, or Local law. 
 
 <!-- PROJECT REPORT-->
 ## Project Report
-PDF GITHUB LINK HERE
+https://github.com/DevGlitch/jaqen/tree/master/project_report/
 
 <!-- PROJECT PRESENTATION-->
 ## Presentation
-YOUTUBE VIDEO LINK HERE
+ADD YOUTUBE VIDEO LINK HERE
 
 
 <!-- DEMO OF THE PROJECT -->
 ## Demos
-https://github.com/DevGlitch/jaqen/tree/master/Demos
+https://github.com/DevGlitch/jaqen/tree/master/demos/
 
 
 <!-- GETTING STARTED -->
