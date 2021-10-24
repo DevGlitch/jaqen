@@ -23,8 +23,14 @@ def img_object_detection_box(img_path):
     """
 
     # Files from Darknet
-    config = "object_detection/yolo/cfg/yolov3.cfg"
-    weights = "object_detection/yolo/weights/yolov3.weights"  # NOT ON REPO FOR NOW
+
+    # YOLO V3 - For general object detection
+    # config = "../object_detection/yolo/cfg/yolov3.cfg"
+    # weights = "../object_detection/yolo/weights/yolov3.weights"
+
+    # Custom YOLOV4-Tiny Trained on Cards Dataset
+    config = "../object_detection/yolo/cfg/yolov4-tiny-blackbeard.cfg"
+    weights = "../object_detection/yolo/weights/yolov4-tiny-obj_170000.weights"
 
     # Reads network model stored in Darknet model files
     # OpenCV dnn module is used to load YOLO network
@@ -32,12 +38,16 @@ def img_object_detection_box(img_path):
 
     # Using Common Objects in Context (COCO) Labels
     # (https://cocodataset.org/)
-    coco = open("object_detection/yolo/coco/coco.names")
-    coco_label = coco.read().strip().split("\n")
+    # obj = open("../object_detection/yolo/obj_names/coco.names")
+    # obj_label = obj.read().strip().split("\n")
+
+    # Playing Cards Labels
+    obj_names = open("../object_detection/yolo/obj_names/obj.names")
+    obj_labels = obj_names.read().strip().split("\n")
 
     # initialize a list of colors to represent each possible class label
     np.random.seed(14)
-    colors = np.random.randint(0, 255, size=(len(coco_label), 3), dtype="uint8")
+    colors = np.random.randint(0, 255, size=(len(obj_labels), 3), dtype="uint8")
 
     # Reads image from provided path
     read_img = cv2.imread(img_path)
@@ -110,13 +120,13 @@ def img_object_detection_box(img_path):
             (w, h) = (grid[i][2], grid[i][3])
 
             # Create a bounding box around the object
-            color = [int(c) for c in colors[label[i]]]
+            color = [int(c) for c in colors[labels[i]]]
             cv2.rectangle(read_img, (x, y), (x + w, y + h), color, 2)
 
             # Add label to the bounding box
-            text = "{}: {:.4f}".format(coco_label[label[i]], probabilities[i])
+            text = "{}: {:.4f}".format(obj_labels[labels[i]], probabilities[i])
             cv2.putText(
-                read_img, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2
+                read_img, text, (x + 10, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2
             )
 
     # If no object has been detected
@@ -124,8 +134,9 @@ def img_object_detection_box(img_path):
         print("No object detected in the picture.")
         pass
 
-    coco.close()
+    obj_names.close()
 
     # Open image to show the output with detected objects
+    cv2.namedWindow('Image', cv2.WINDOW_NORMAL)
     cv2.imshow("Image", read_img)
     cv2.waitKey(0)

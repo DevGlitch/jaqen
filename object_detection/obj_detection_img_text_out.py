@@ -23,8 +23,14 @@ def img_object_detection_txt(img_path):
     """
 
     # Files from Darknet
-    config = "object_detection/yolo/cfg/yolov3.cfg"
-    weights = "object_detection/yolo/weights/yolov3.weights"  # NOT ON REPO FOR NOW
+
+    # YOLO V3 - For general object detection
+    # config = "../object_detection/yolo/cfg/yolov3.cfg"
+    # weights = "../object_detection/yolo/weights/yolov3.weights"
+
+    # Custom YOLOV4-Tiny Trained on Cards Dataset
+    config = "../object_detection/yolo/cfg/yolov4-tiny-blackbeard.cfg"
+    weights = "../object_detection/yolo/weights/yolov4-tiny-obj_170000.weights"
 
     # Reads network model stored in Darknet model files
     # OpenCV dnn module is used to load YOLO network
@@ -32,8 +38,12 @@ def img_object_detection_txt(img_path):
 
     # Using Common Objects in Context (COCO) Labels
     # (https://cocodataset.org/)
-    coco = open("object_detection/yolo/coco/coco.names")
-    coco_label = coco.read().strip().split("\n")
+    # obj = open("../object_detection/yolo/obj_names/coco.names")
+    # obj_label = obj.read().strip().split("\n")
+
+    # Playing Cards Labels
+    obj_names = open("../object_detection/yolo/obj_names/obj.names")
+    obj_labels = obj_names.read().strip().split("\n")
 
     # Reads image from provided path
     read_img = cv2.imread(img_path)
@@ -97,13 +107,13 @@ def img_object_detection_txt(img_path):
     # If at least one object has been detected
     if len(NMS) > 0:
 
-        # List objects where it stores the coco labels detected in the image
+        # List objects where it stores the obj_names labels detected in the image
         objects = []
 
         # Add each object detected to the list objects
         for i in NMS.flatten():
             objects += [
-                f"{coco_label[labels[i]]}"
+                f"{obj_labels[labels[i]]}"
             ]
         # Potential for future improvement if needed: regroup same labels together + add a count for them
 
@@ -112,11 +122,11 @@ def img_object_detection_txt(img_path):
         # List all objects found even if the label is the same
         # e.g. if two dogs are detected it will list dog twice
         print("The objects are:\n", objects)
-        coco.close()
+        obj_names.close()
         return objects
 
     # If no object has been detected
     else:
         print("No object detected in the picture.")
-        coco.close()
+        obj_names.close()
         pass
