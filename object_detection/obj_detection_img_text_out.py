@@ -42,7 +42,7 @@ def img_object_detection_txt(img_path):
     # obj_label = obj.read().strip().split("\n")
 
     # Playing Cards Labels
-    obj_names = open("../object_detection/yolo/obj_names/obj.names")
+    obj_names = open("yolo/obj_names/blackbeard.names")
     obj_labels = obj_names.read().strip().split("\n")
 
     # Reads image from provided path

@@ -42,7 +42,7 @@ def img_object_detection_box(img_path):
     # obj_label = obj.read().strip().split("\n")
 
     # Playing Cards Labels
-    obj_names = open("../object_detection/yolo/obj_names/obj.names")
+    obj_names = open("yolo/obj_names/blackbeard.names")
     obj_labels = obj_names.read().strip().split("\n")
 
     # initialize a list of colors to represent each possible class label
