@@ -5,7 +5,7 @@ from object_detection.obj_detection_img_text_out import *
 
 # YOLOV3 & COCO for testing function
 config_file = "object_detection/yolo/cfg/yolov3.cfg"
-weights_file = "object_detection/yolo/weights/yolov3.weights"
+weights_file = "object_detection/yolo/weights/yolov3.weights"  # wget https://pjreddie.com/media/files/yolov3.weights
 labels_file = "object_detection/yolo/obj_names/coco.names"  # COCO Labels (https://cocodataset.org/)
 
 
