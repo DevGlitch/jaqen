@@ -17,13 +17,13 @@ def main():
     img_object_detection_txt(img, config_path, weights_path, labels_path)
 
     # Get image out with detected objects in bounding boxes
-    # img_object_detection_box(img)
+    # img_object_detection_box(img, config_path, weights_path, labels_path)
 
     # vid = "busy_intersection.mp4"
     # vid = "live_blackjack_short_2.mp4"
 
     # Get video out with detected objects in bounding boxes
-    # vid_object_detection_box(vid)
+    # vid_object_detection_box(vid, config_path, weights_path, labels_path)
 
     # Close all open windows
     # cv2.destroyAllWindows()

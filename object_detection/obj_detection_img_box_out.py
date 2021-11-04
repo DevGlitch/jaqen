@@ -2,47 +2,28 @@
 # https://github.com/DevGlitch/botwizer
 
 # Resources used:
-# https://pjreddie.com/darknet/yolo/
-# https://github.com/pjreddie/darknet/
-# https://docs.opencv.org/master/d6/d0f/group__dnn.html
-# https://docs.opencv.org/master/db/deb/tutorial_display_image.html
-# https://numpy.org/doc/stable/reference/generated/numpy.argmax.html
-# https://arxiv.org/pdf/1506.02640v5.pdf (Research Paper about YOLO)
-# https://arxiv.org/pdf/1405.0312.pdf (Research Paper about COCO)
+# https://github.com/AlexeyAB/darknet
 
 import cv2
 import time
 import numpy as np
 
 
-def img_object_detection_box(img_path):
+def img_object_detection_box(img_path, config_path, weights_path, labels_path):
     """Running YOLO on an image to detect objects
     :param img_path: path of image to analyse
-    :return: object(s) detected
-    :rtype: list
+    :param config_path: path of the .cfg file
+    :param weights_path: path of the .weights file
+    :param labels_path: path of the .names file
+    :return: showing image with bounding box and label of object(s) detected
+    :rtype: image (opencv window)
     """
 
-    # Files from Darknet
+    # Reads and load model stored in Darknet model files
+    net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
 
-    # YOLO V3 - For general object detection
-    # config = "../object_detection/yolo/cfg/yolov3.cfg"
-    # weights = "../object_detection/yolo/weights/yolov3.weights"
-
-    # Custom YOLOV4-Tiny Trained on Cards Dataset
-    config = "../object_detection/yolo/cfg/yolov4-tiny-blackbeard.cfg"
-    weights = "../object_detection/yolo/weights/yolov4-tiny-obj_170000.weights"
-
-    # Reads network model stored in Darknet model files
-    # OpenCV dnn module is used to load YOLO network
-    net = cv2.dnn.readNetFromDarknet(config, weights)
-
-    # Using Common Objects in Context (COCO) Labels
-    # (https://cocodataset.org/)
-    # obj = open("../object_detection/yolo/obj_names/coco.names")
-    # obj_label = obj.read().strip().split("\n")
-
-    # Playing Cards Labels
-    obj_names = open("yolo/obj_names/blackbeard.names")
+    # Object Labels
+    obj_names = open(labels_path)
     obj_labels = obj_names.read().strip().split("\n")
 
     # initialize a list of colors to represent each possible class label

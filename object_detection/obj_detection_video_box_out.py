@@ -1,37 +1,29 @@
+# Adapted from repo botwizer by DevGltich
+# https://github.com/DevGlitch/botwizer
+
+# Resources used:
+# https://github.com/AlexeyAB/darknet
+
 import cv2
-import os
 import time
 import numpy as np
 
 
-def vid_object_detection_box(vid_path):
+def vid_object_detection_box(vid_path, config_path, weights_path, labels_path):
     """Running YOLO on a video to detect objects
     :param vid_path: path of video to analyse
-    :return: video with object(s) detected
+    :param config_path: path of the .cfg file
+    :param weights_path: path of the .weights file
+    :param labels_path: path of the .names file
+    :return: video with bounding box and label of object(s) detected
     :rtype: mp4
     """
 
-    # Files from Darknet
+    # Reads and load model stored in Darknet model files
+    net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
 
-    # YOLO V3 - For general object detection
-    # config = "../object_detection/yolo/cfg/yolov3.cfg"
-    # weights = "../object_detection/yolo/weights/yolov3.weights"
-
-    # Custom YOLOV4-Tiny Trained on Cards Dataset
-    config = "../object_detection/yolo/cfg/yolov4-tiny-blackbeard.cfg"
-    weights = "../object_detection/yolo/weights/yolov4-tiny-obj_170000.weights"
-
-    # Reads network model stored in Darknet model files
-    # OpenCV dnn module is used to load YOLO network
-    net = cv2.dnn.readNetFromDarknet(config, weights)
-
-    # Using Common Objects in Context (COCO) Labels
-    # (https://cocodataset.org/)
-    # obj_names = open("../object_detection/yolo/obj_names/coco.names")
-    # obj_labels = obj_names.read().strip().split("\n")
-
-    # Playing Cards Labels
-    obj_names = open("yolo/obj_names/blackbeard.names")
+    # Object Labels
+    obj_names = open(labels_path)
     obj_labels = obj_names.read().strip().split("\n")
 
     # initialize a list of colors to represent each possible class label

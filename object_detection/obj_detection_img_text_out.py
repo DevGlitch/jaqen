@@ -4,7 +4,6 @@
 # Resources used:
 # https://github.com/AlexeyAB/darknet
 
-import os
 import cv2
 import time
 import numpy as np
@@ -13,9 +12,9 @@ import numpy as np
 def img_object_detection_txt(img_path, config_path, weights_path, labels_path):
     """Running YOLO on an image to detect objects
     :param img_path: path of image to analyse
-    :param config_path: str name of the .cfg file
-    :param weights_path: str name of the .weights file
-    :param labels_path: str name of the .names file
+    :param config_path: path of the .cfg file
+    :param weights_path: path of the .weights file
+    :param labels_path: path of the .names file
     :return: object(s) detected
     :rtype: list
     """
