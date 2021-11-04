@@ -31,7 +31,10 @@ def main():
     # vid_object_detection_box(vid, config_path, weights_path, labels_path)
 
     # Get text out with detected objects as a list
-    vid_object_detection_txt(vid, config_path, weights_path, labels_path)
+    for detected_objects in vid_object_detection_txt(vid, config_path, weights_path, labels_path):
+
+        print(detected_objects)  # for debug
+        print("----------------------------------------")  # for debug
 
     # Close all open windows
     # cv2.destroyAllWindows()

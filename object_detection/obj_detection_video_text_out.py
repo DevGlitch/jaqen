@@ -60,12 +60,12 @@ def vid_object_detection_txt(vid_path, config_path, weights_path, labels_path):
         layer_name = net.getLayerNames()
         layer_name = [layer_name[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
-        # Timing network output
-        time_start = time.perf_counter()
-        print("Starting YOLO analysis...")
+        # # Timing network output
+        # time_start = time.perf_counter()
+        # print("Starting YOLO analysis...")
         outputs = net.forward(layer_name)
-        time_stop = time.perf_counter() - time_start
-        print(f"YOLO ran for: {time_stop:.2f}s")
+        # time_stop = time.perf_counter() - time_start
+        # print(f"YOLO ran for: {time_stop:.2f}s")
 
         grid, probabilities, labels = [], [], []
 
@@ -116,9 +116,9 @@ def vid_object_detection_txt(vid_path, config_path, weights_path, labels_path):
                     f"{obj_labels[labels[i]]}"
                 ]
 
-                print("The objects are:\n", objects)
+                # print("The objects are:\n", objects)
 
-                # print(objects)
+                yield objects
 
     # Close names file
     obj_names.close()
