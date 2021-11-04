@@ -1,7 +1,6 @@
 from obj_detection_img_text_out import *
 from obj_detection_img_box_out import *
-from obj_detection_video_box_out import *
-import cv2
+# from obj_detection_video_box_out import *
 
 
 def main():
@@ -17,7 +16,7 @@ def main():
     img_object_detection_txt(img, config_path, weights_path, labels_path)
 
     # Get image out with detected objects in bounding boxes
-    # img_object_detection_box(img, config_path, weights_path, labels_path)
+    img_object_detection_box(img, config_path, weights_path, labels_path)
 
     # vid = "busy_intersection.mp4"
     # vid = "live_blackjack_short_2.mp4"
