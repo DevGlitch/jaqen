@@ -4,7 +4,7 @@ import pandas as pd
 ### 1,2,4+ Deck Basic Strategy
 
 # 1 = hit, 2 = stand, 3 = double, 4 = split
-# basic_strat df - basic strategy for 1,2,4+ decks
+# basic_strat df - basic blackjack for 1,2,4+ decks
 
 
 # data
@@ -126,7 +126,7 @@ pair_1 = [[4, 4, 4, 4, 4, 4, 1, 1, 1, 1, "pair", 4, 1],
          [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, "pair", 12, 1]]
 
 
-# construct strategy df
+# construct blackjack df
 rules = [hard_4, soft_4, pair_4, hard_2, soft_2, pair_2, hard_1, soft_1, pair_1]
 cols = [2,3,4,5,6,7,8,9,10,1,"type", "sum", 'deck']
 basic_strat = pd.DataFrame(columns=cols)

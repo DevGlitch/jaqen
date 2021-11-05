@@ -21,7 +21,7 @@ class Game:
     cards: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     """
 
-    def __init__(self, decks_n):
+    def __init__(self, decks_n=1):
         self.decks_n = decks_n
         self.count = 0
         self.min_bet = 10
@@ -53,7 +53,7 @@ class Hand:
     """
     Class for hand
     """
-    def __init__(self, cards, dealer=10, decks=2):
+    def __init__(self, cards, dealer=10, decks=1):
         """
         :param cards: list - list of cards in hand
         """
@@ -137,7 +137,7 @@ class Hand:
 
 
 # debug Class Game
-game1 = Game(2)
+game1 = Game()
 game1.update(10)
 game1.update(10)
 
@@ -147,6 +147,6 @@ print(game1.bet_size())
 # debug Class Hand
 
 # instantiate hand
-hand1 = Hand([5, 6, 10], dealer=2, decks=2)
+hand1 = Hand([5, 6, 10], dealer=2)
 # get action
 print(hand1.action())

@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 *.xml
 .idea/jaqen.iml
+*.csv
