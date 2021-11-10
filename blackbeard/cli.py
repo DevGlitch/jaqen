@@ -1,4 +1,4 @@
-from object_detection_func import *
+from object_detection.object_detection_func import *
 import keyboard
 
 
@@ -8,9 +8,9 @@ def main():
     # ################## START - USER DEFINED FILES ################## #
 
     # Custom YOLOV4-Tiny Trained on Playing Cards Dataset
-    config_path = "../object_detection/yolo/cfg/yolov4-tiny-blackbeard.cfg"
-    weights_path = "yolo/weights/blackbeard_yolov4-tiny-obj_170000.weights"
-    labels_path = "../object_detection/yolo/obj_names/blackbeard.names"
+    config_path = "../blackbeard/object_detection/yolo/cfg/yolov4-tiny-blackbeard.cfg"
+    weights_path = "../blackbeard/object_detection/yolo/weights/blackbeard_yolov4-tiny-obj_170000.weights"
+    labels_path = "../blackbeard/object_detection/yolo/obj_names/blackbeard.names"
 
     # RTSP Stream URL
     rtsp_url = "rtsp://RASPBERRY_PI_CAMERA_IP:8554/unicast"
