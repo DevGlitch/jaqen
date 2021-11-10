@@ -138,6 +138,7 @@ def stream_object_detection_box(rtsp_url, config_path, weights_path, labels_path
                 )
 
             # Write image to output video file
+            # Uncommment this line below if you need to save the output to a video
             # out.write(image)
 
             # Open image to show the output with detected objects
