@@ -1,0 +1,5 @@
+classes = 52
+train  = C:\Users\Nico\darknet\build\darknet\x64\data\train.txt
+valid  = C:\Users\Nico\darknet\build\darknet\x64\data\test.txt
+names = C:\Users\Nico\darknet\build\darknet\x64\data\obj.names
+backup = C:\Users\Nico\darknet\build\darknet\x64\backup\
