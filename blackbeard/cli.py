@@ -13,7 +13,7 @@ def main():
     labels_path = "../blackbeard/object_detection/yolo/obj_names/blackbeard.names"
 
     # RTSP Stream URL
-    rtsp_url = "rtsp://RASPBERRY_PI_CAMERA_IP:8554/unicast"
+    rtsp_url = "rtsp://192.168.1.98:8554/unicast"
 
     # ################### END - USER DEFINED FILES ################### #
     ####################################################################
@@ -49,7 +49,7 @@ def main():
         # ######### START OBJECT DETECTION PIPELINE #########  #
 
         # Get detected objects from stream
-        for detected_objects in object_detection(net, obj_labels, image):
+        for detected_objects in object_detection(net, obj_labels, image, cuda=1):
 
             print("[INFO] Card Detected:", detected_objects)  # for debug
             print("---------------------------------------------")  # for debug
@@ -69,7 +69,6 @@ def main():
         # ######## START BLACKJACK STRATEGY PIPELINE ########  #
 
         # Insert code here
-
         # ######### END BLACKJACK STRATEGY PIPELINE #########  #
         ########################################################
 
