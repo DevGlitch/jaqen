@@ -130,3 +130,5 @@ dmypy.json
 
 # intellij configs
 .idea/
+
+*.csv
