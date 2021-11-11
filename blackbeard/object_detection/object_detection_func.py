@@ -55,7 +55,7 @@ def labels_colors(obj_labels):
     return colors
 
 
-def object_detection(net, obj_labels, image, r_type="obj_list", colors=None, out=None):
+def object_detection(net, obj_labels, image, r_type="obj_list", colors=None, out=None, cuda=0):
     """Running YOLO on a video or stream to detect objects
     :param net: loaded darknet model and config file
     :param obj_labels: loaded object labels of the model
@@ -81,7 +81,10 @@ def object_detection(net, obj_labels, image, r_type="obj_list", colors=None, out
 
     # Getting each layer name
     layer_name = net.getLayerNames()
-    layer_name = [layer_name[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+    if cuda:
+        layer_name = [layer_name[i - 1] for i in net.getUnconnectedOutLayers()]
+    else:
+        layer_name = [layer_name[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     outputs = net.forward(layer_name)
 
     # Initializing lists
