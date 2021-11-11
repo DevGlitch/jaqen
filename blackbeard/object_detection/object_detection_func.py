@@ -168,6 +168,11 @@ def object_detection(net, obj_labels, image, r_type="obj_list", colors=None, out
             # Open image to show the output with detected objects
             cv2.imshow("Image", image)
 
+    # For debug
+    else:
+        print("[INFO] No object detected.")
+        print("---------------------------------------------")
+
 
 def write_out_video_init(image, output_name):
     """Initialize writing output video
