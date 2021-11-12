@@ -1,6 +1,7 @@
 import math
 from rules import basic_strat, cards
 
+
 # Rules
 # dealer hits soft 17
 # double after split allowed
