@@ -1,8 +1,8 @@
 from object_detection.object_detection_func import *
 import keyboard
 import mediapipe as mp
-import tensorflow as tf
-from gesture.gesture_init import gesture_preprocess, gesture_inference, load_model
+from gesture.gesture_init import gesture_pipeline
+import time
 
 
 def main():
@@ -18,6 +18,9 @@ def main():
     # RTSP Stream URL
     rtsp_url = "rtsp://192.168.1.98:8554/unicast"
 
+    # Debug view
+    debug = True
+
     # ################### END - USER DEFINED FILES ################### #
     ####################################################################
 
@@ -26,7 +29,6 @@ def main():
 
     # INFO START
     print("[INFO] Starting Blackbeard...")
-    debug = True  # debug view
 
     # Load Object Detection
     print("[INFO] Loading Object Detection...")
@@ -40,9 +42,6 @@ def main():
     mp_drawing = mp.solutions.drawing_utils
     mp_drawing_styles = mp.solutions.drawing_styles
     mp_hands = mp.solutions.hands
-    interpreter, input_details,output_details = load_model()
-    inf_class = {0: 'Hit', 1: 'Stand', 2: 'Split', 3: 'Reset', 4: 'None'}
-    inf_class_idx = 4
     sleep(1)
     print("[INFO] Gesture Detection Loaded.")
 
@@ -60,6 +59,10 @@ def main():
             model_complexity=1,
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5) as hands:
+
+        # timing
+        gest_time = time.time()  # gesture timer
+
         while stream_video.isOpened():
 
             # Reading image from stream
@@ -80,7 +83,13 @@ def main():
             ########################################################
             # ############## START GESTURE PIPELINE #############  #
 
-            # Insert code here
+            gest_class, image, gest_time = gesture_pipeline(image,
+                                                            gest_time,
+                                                            hands,
+                                                            mp_hands,
+                                                            mp_drawing,
+                                                            mp_drawing_styles,
+                                                            debug)
 
             # ############### END GESTURE PIPELINE ##############  #
             ########################################################
@@ -94,8 +103,9 @@ def main():
 
             # debug view
             if debug:
-                cv2.putText(image, f"{inf_class[inf_class_idx]}", (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+                cv2.putText(image, f"{gest_class}", (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
                 cv2.imshow('Debug View', image)
+                cv2.waitKey(5)
 
             # Command to stop Blackbeard
             if keyboard.is_pressed("q"):
@@ -103,6 +113,9 @@ def main():
                 break
 
     sleep(1)
+    # Tear down debug view
+    if debug:
+        cv2.destroyAllWindows()
 
     # Tearing down object detection
     teardown_obj_detection(obj_names)
