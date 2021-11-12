@@ -2,6 +2,7 @@ from object_detection.object_detection_func import *
 import keyboard
 import mediapipe as mp
 from gesture.gesture_init import gesture_pipeline
+from blackjack import blackjack
 import time
 
 
@@ -9,6 +10,8 @@ def main():
 
     ####################################################################
     # ################## START - USER DEFINED FILES ################## #
+
+    # run v4l2rtspserver on raspi
 
     # Custom YOLOV4-Tiny Trained on Playing Cards Dataset
     config_path = "../blackbeard/object_detection/yolo/cfg/yolov4-tiny-blackbeard.cfg"
@@ -42,6 +45,15 @@ def main():
     mp_drawing = mp.solutions.drawing_utils
     mp_drawing_styles = mp.solutions.drawing_styles
     mp_hands = mp.solutions.hands
+    sleep(1)
+    print("[INFO] Gesture Detection Loaded.")
+
+    # Load Blackjack logic
+    print("[INFO] Loading Gesture Detection...")
+    ### TODO
+
+
+    ###
     sleep(1)
     print("[INFO] Gesture Detection Loaded.")
 
@@ -97,7 +109,8 @@ def main():
             ########################################################
             # ######## START BLACKJACK STRATEGY PIPELINE ########  #
 
-            # Insert code here
+            # Insert code here TODO
+            
             # ######### END BLACKJACK STRATEGY PIPELINE #########  #
             ########################################################
 
