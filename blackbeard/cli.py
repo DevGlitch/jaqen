@@ -2,7 +2,8 @@ from object_detection.object_detection_func import *
 import keyboard
 import mediapipe as mp
 from gesture.gesture_init import gesture_pipeline
-from blackjack import blackjack
+from blackjack.blackjack import Game
+from blackjack.rules import cards
 import time
 
 
@@ -50,9 +51,8 @@ def main():
 
     # Load Blackjack logic
     print("[INFO] Loading Gesture Detection...")
-    ### TODO
-
-
+    ###
+    game = Game(cards)
     ###
     sleep(1)
     print("[INFO] Gesture Detection Loaded.")
@@ -88,6 +88,7 @@ def main():
 
                 print("[INFO] Card Detected:", detected_objects)  # for debug
                 print("---------------------------------------------")  # for debug
+            # add timer
 
             # ########## END OBJECT DETECTION PIPELINE ##########  #
             ########################################################
@@ -109,14 +110,16 @@ def main():
             ########################################################
             # ######## START BLACKJACK STRATEGY PIPELINE ########  #
 
-            # Insert code here TODO
+            game.game_update(card="", gest=gest_class)
             
             # ######### END BLACKJACK STRATEGY PIPELINE #########  #
             ########################################################
 
             # debug view
             if debug:
-                cv2.putText(image, f"{gest_class}", (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+                cv2.putText(image, f"Gesture: {gest_class}", (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+                cv2.putText(image, f"Count: {game.count}", (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+                cv2.putText(image, f"Opt Action: {game.optAction()}", (0, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
                 cv2.imshow('Debug View', image)
                 cv2.waitKey(5)
 
