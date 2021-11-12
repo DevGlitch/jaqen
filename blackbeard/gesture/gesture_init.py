@@ -20,6 +20,15 @@ inf_class = {0: 'Hit', 1: 'Stand', 2: 'Split', 3: 'Reset', 4: 'None'}
 inf_class_idx = 4
 
 
+def load_model():
+    tflite_save_path = 'model/model.tflite'
+    interpreter = tf.lite.Interpreter(model_path=tflite_save_path)
+    interpreter.allocate_tensors()
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+    return interpreter, input_details, output_details
+
+
 def gesture_preprocess(landmark):
     """
     convert landmarks for trainable data

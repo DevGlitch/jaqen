@@ -1,5 +1,8 @@
 from object_detection.object_detection_func import *
 import keyboard
+import mediapipe as mp
+import tensorflow as tf
+from gesture.gesture_init import gesture_preprocess, gesture_inference, load_model
 
 
 def main():
@@ -23,6 +26,7 @@ def main():
 
     # INFO START
     print("[INFO] Starting Blackbeard...")
+    debug = True  # debug view
 
     # Load Object Detection
     print("[INFO] Loading Object Detection...")
@@ -30,6 +34,17 @@ def main():
     obj_names, obj_labels = load_labels(labels_path)
     sleep(1)
     print("[INFO] Object Detection Loaded.")
+
+    # Load Gesture Detection
+    print("[INFO] Loading Gesture Detection...")
+    mp_drawing = mp.solutions.drawing_utils
+    mp_drawing_styles = mp.solutions.drawing_styles
+    mp_hands = mp.solutions.hands
+    interpreter, input_details,output_details = load_model()
+    inf_class = {0: 'Hit', 1: 'Stand', 2: 'Split', 3: 'Reset', 4: 'None'}
+    inf_class_idx = 4
+    sleep(1)
+    print("[INFO] Gesture Detection Loaded.")
 
     # Capture video stream from RTSP URL
     print("[INFO] Stream Capture Starting...")
@@ -40,42 +55,52 @@ def main():
     # INFO READY
     print("[INFO] Blackbeard is running...")
 
-    while stream_video.isOpened():
+    with mp_hands.Hands(
+            max_num_hands=1,
+            model_complexity=1,
+            min_detection_confidence=0.5,
+            min_tracking_confidence=0.5) as hands:
+        while stream_video.isOpened():
 
-        # Reading image from stream
-        _, image = stream_video.read()
+            # Reading image from stream
+            _, image = stream_video.read()
 
-        ########################################################
-        # ######### START OBJECT DETECTION PIPELINE #########  #
+            ########################################################
+            # ######### START OBJECT DETECTION PIPELINE #########  #
 
-        # Get detected objects from stream
-        for detected_objects in object_detection(net, obj_labels, image, cuda=1):
+            # Get detected objects from stream
+            for detected_objects in object_detection(net, obj_labels, image, cuda=1):
 
-            print("[INFO] Card Detected:", detected_objects)  # for debug
-            print("---------------------------------------------")  # for debug
+                print("[INFO] Card Detected:", detected_objects)  # for debug
+                print("---------------------------------------------")  # for debug
 
-        # ########## END OBJECT DETECTION PIPELINE ##########  #
-        ########################################################
+            # ########## END OBJECT DETECTION PIPELINE ##########  #
+            ########################################################
 
-        ########################################################
-        # ############## START GESTURE PIPELINE #############  #
+            ########################################################
+            # ############## START GESTURE PIPELINE #############  #
 
-        # Insert code here
+            # Insert code here
 
-        # ############### END GESTURE PIPELINE ##############  #
-        ########################################################
+            # ############### END GESTURE PIPELINE ##############  #
+            ########################################################
 
-        ########################################################
-        # ######## START BLACKJACK STRATEGY PIPELINE ########  #
+            ########################################################
+            # ######## START BLACKJACK STRATEGY PIPELINE ########  #
 
-        # Insert code here
-        # ######### END BLACKJACK STRATEGY PIPELINE #########  #
-        ########################################################
+            # Insert code here
+            # ######### END BLACKJACK STRATEGY PIPELINE #########  #
+            ########################################################
 
-        # Command to stop Blackbeard
-        if keyboard.is_pressed("q"):
-            print("[INFO] Closing Blackbeard...")
-            break
+            # debug view
+            if debug:
+                cv2.putText(image, f"{inf_class[inf_class_idx]}", (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+                cv2.imshow('Debug View', image)
+
+            # Command to stop Blackbeard
+            if keyboard.is_pressed("q"):
+                print("[INFO] Closing Blackbeard...")
+                break
 
     sleep(1)
 
