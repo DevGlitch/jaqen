@@ -1,6 +1,5 @@
 import math
-from rules import basic_strat, cards
-
+from .rules import basic_strat
 
 # Rules
 # dealer hits soft 17
@@ -28,6 +27,7 @@ class Hand:
         self.ptotal = self.hand_sum(player='player')
         self.dtotal = self.hand_sum(player='dealer')
         self.action = -1
+        self.opt = self.optAction()
 
     def hand_type(self):
         """
@@ -37,7 +37,7 @@ class Hand:
         """
         hand_size = len(self.hand)
         if hand_size <= 1:
-            return None
+            return "none"
 
         if hand_size == 2:
             if self.hand[0] == self.hand[1]:
@@ -110,10 +110,13 @@ class Hand:
 
         :return: str - optimal action
         """
-        action_space = {1: "Hit", 2: 'Stand', 3: 'Double', 4: 'Split'}
-        basic_df = basic_strat.groupby("deck").get_group(decks_n)
-        filtered = basic_df[(basic_df['sum'] == self.ptotal) & (basic_df['type'] == self.htype)]
-        return action_space[filtered[self.dealer[0]].values[0]]
+        if self.phase == 1:
+            action_space = {1: "Hit", 2: 'Stand', 3: 'Double', 4: 'Split'}
+            basic_df = basic_strat.groupby("deck").get_group(decks_n)
+            filtered = basic_df[(basic_df['sum'] == self.ptotal) & (basic_df['type'] == self.htype)]
+            return action_space[filtered[self.dealer[0]].values[0]]
+        else:
+            return "None"
 
 
 class Round(Hand):
@@ -159,8 +162,9 @@ class Round(Hand):
 
     def round_update(self, card):
         if self.phase == 0:
-            self.add(card, player='player')
-            self.check_bet()
+            if card > 0:
+                self.add(card, player='player')
+                self.check_bet()
         elif self.phase == 1:
             self.check_player()
         elif self.phase == 2:
@@ -206,7 +210,7 @@ class Game(Round):
         :param card: str - detected card
         :param gest: str - hit/stand/reset
         """
-        if not card and gest == 'None':
+        if not card and gest=='None':
             return
         self.gest_assign(gest=gest)
         if card and self.cards[card][1] == 1:
@@ -220,7 +224,7 @@ class Game(Round):
         """
         :param gest: str - None/Hit/Stand/Reset
         """
-        gest_key = {'Hit': 1, 'Stand': 2}
+        gest_key = {'Hit': 1, 'Stand': 2, 'Split': '3'}
         if gest == "Reset":
             self.reset()
         elif gest == "None":

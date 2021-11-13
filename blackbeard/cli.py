@@ -84,10 +84,10 @@ def main():
             # ######### START OBJECT DETECTION PIPELINE #########  #
 
             # Get detected objects from stream
-            for detected_objects in object_detection(net, obj_labels, image, cuda=1):
-
-                print("[INFO] Card Detected:", detected_objects)  # for debug
-                print("---------------------------------------------")  # for debug
+            # for detected_objects in object_detection(net, obj_labels, image, cuda=1):
+            #
+            #     print("[INFO] Card Detected:", detected_objects)  # for debug
+            #     print("---------------------------------------------")  # for debug
             # add timer
 
             # ########## END OBJECT DETECTION PIPELINE ##########  #
@@ -119,7 +119,7 @@ def main():
             if debug:
                 cv2.putText(image, f"Gesture: {gest_class}", (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
                 cv2.putText(image, f"Count: {game.count}", (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-                cv2.putText(image, f"Opt Action: {game.optAction()}", (0, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
+                cv2.putText(image, f"Opt Action: {game.opt}", (0, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
                 cv2.imshow('Debug View', image)
                 cv2.waitKey(5)
 
