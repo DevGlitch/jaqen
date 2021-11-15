@@ -26,10 +26,10 @@ def turn_led_on_off(pin, factory, blink, time_on=0.5, time_off=1):
 
     for i in np.arange(blink):
         led.on()
-        print(f"LED at pin {pin} turned on.")
+        print(f"[INFO] LED at pin {pin} turned on.")
         sleep(time_on)
         led.off()
-        print(f"LED at pin {pin} turned off.")
+        print(f"[INFO] LED at pin {pin} turned off.")
         sleep(time_off)
 
 
@@ -41,9 +41,9 @@ def button_wait_for_press(pin, factory, timeout=None):
     :return: Pause script until button is pressed
     """
     button = Button(pin, pin_factory=factory)
-    print(f"Waiting for button at pin {pin} to be pressed.")
+    print(f"[INFO] Waiting for button at pin {pin} to be pressed.")
     button.wait_for_press(timeout)
-    print(f"The button at pin {pin} was pressed.")
+    print(f"[INFO] The button at pin {pin} was pressed.")
     return True
 
 
@@ -69,7 +69,8 @@ def button_when_pressed(pin, factory):
     """
     button = Button(pin, pin_factory=factory)
     button.when_pressed()
-    print(f"The button at pin {pin} was pressed.")
+    print(f"[INFO] The button at pin {pin} was pressed.")
+    return True
 
 
 def button_when_released(pin, factory):
@@ -80,4 +81,5 @@ def button_when_released(pin, factory):
     """
     button = Button(pin, pin_factory=factory)
     button.when_released()
-    print(f"The button at pin {pin} was released.")
+    print(f"[INFO] The button at pin {pin} was released.")
+    return True

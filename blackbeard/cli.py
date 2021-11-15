@@ -1,6 +1,7 @@
 from object_detection.object_detection_func import *
 from remote_gpio.gpio_func import *
 from mqtt.mqtt_func import *
+from gpiozero import Button
 import keyboard
 
 
@@ -15,7 +16,7 @@ def main():
     labels_path = "../blackbeard/object_detection/yolo/obj_names/blackbeard.names"
 
     # Raspberry Pi IP Address
-    pi_ip = "ADD PI ADDRESS HERE"
+    pi_ip = "YOUR_PI_IP_ADDRESS"
 
     # RTSP Stream URL
     rtsp_url = "rtsp://" + pi_ip + ":8554/unicast"
@@ -23,8 +24,19 @@ def main():
     # MQTT channel
     pi_channel = "blackbeard"
 
+    # Connecting to GPIO remotely
+    factory = connect_remote_gpio(pi_ip)
+    # GPIO22 - Turn the backlight on and off
+    # GPIO23 & GPIO24 - Two temporary buttons next to the display
+    stop_button = Button(24, pin_factory=factory)
+
     # ################### END - USER DEFINED FILES ################### #
     ####################################################################
+
+    # Waiting for Button GPIO23 to be press to start Blackbeard
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Press Start.")
+    print("[INFO] Press Start.")
+    button_wait_for_press(23, factory)  # Top button
 
     ####################################################################
     # ###################### START - BLACKBEARD ###################### #
@@ -67,10 +79,12 @@ def main():
 
             # PC
             print("[INFO] Card Detected:", detected_objects)
-            send_msg_by_mqtt(pi_ip, pi_channel, message=("[INFO] Card Detected:", detected_objects))
+            msg = "[INFO] Card Detected:" + str(detected_objects)
+            print(msg)
+            send_msg_by_mqtt(pi_ip, pi_channel, msg)
 
             print("---------------------------------------------")
-            send_msg_by_mqtt(pi_ip, pi_channel, "---------------------------------------------")
+            send_msg_by_mqtt(pi_ip, pi_channel, "----------------------------------------")
 
         # ########## END OBJECT DETECTION PIPELINE ##########  #
         ########################################################
@@ -90,8 +104,13 @@ def main():
         # ######### END BLACKJACK STRATEGY PIPELINE #########  #
         ########################################################
 
-        # Command to stop Blackbeard
+        # Commands to stop Blackbeard
         if keyboard.is_pressed("q"):
+            print("[INFO] Closing Blackbeard...")
+            send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Closing Blackbeard...")
+            break
+
+        elif stop_button.is_held:
             print("[INFO] Closing Blackbeard...")
             send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Closing Blackbeard...")
             break
@@ -105,7 +124,7 @@ def main():
     stream_video.release()
     sleep(1)
     print("[INFO] Video stream released.")
-    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Closing Blackbeard...")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Video stream released.")
 
     # ####################### END - BLACKBEARD ####################### #
     ####################################################################
@@ -114,10 +133,10 @@ def main():
     send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Blackbeard closed.")
 
     print("---------------------------------------------")
-    send_msg_by_mqtt(pi_ip, pi_channel, "---------------------------------------------")
+    send_msg_by_mqtt(pi_ip, pi_channel, "----------------------------------------")
 
     print("[INFO] Thank you for using Blackbeard!")
     send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Thank you for using Blackbeard!")
 
     print("[INFO] Developed by codejacktsu & DevGlitch.")
-    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Developed by codejacktsu & DevGlitch.")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] by codejacktsu & DevGlitch")
