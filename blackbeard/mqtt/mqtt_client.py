@@ -1,5 +1,5 @@
 """
-Originally from https://forums.raspberrypi.com/viewtopic.php?t=238538
+Originally from http://www.steves-internet-guide.com/client-connections-python-mqtt/
 
 Script to be stored in the Raspberry Pi in order to receive message from the MQTT local server.
 
@@ -13,9 +13,21 @@ def on_connect(client, userdata, flags, rc):
     """ When launching mqtt and receiving response from the server
     :return: displaying connection message
     """
-    print("[INFO] MQTT Client successfully connected (result code "+str(rc) + ").")
-    # Subscribing to the channel
-    client.subscribe(channel)
+    if rc == 0:
+        print("[INFO] MQTT Client successfully connected (code "+str(rc) + ").")
+        # Subscribing to the channel
+        client.subscribe(channel)
+    else:
+        print("[INFO] Bad MQTT connection. Returned code", str(rc))
+
+    # Codes
+    # 0: Connection successful
+    # 1: Connection refused – incorrect protocol version
+    # 2: Connection refused – invalid client identifier
+    # 3: Connection refused – server unavailable
+    # 4: Connection refused – bad username or password
+    # 5: Connection refused – not authorised
+    # 6-255: Currently unused.
 
 
 def on_message(client, userdata, msg):
