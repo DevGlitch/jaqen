@@ -16,7 +16,6 @@ def on_connect(client, userdata, flags, rc):
     print("[INFO] MQTT Client successfully connected (result code "+str(rc) + ").")
     # Subscribing to the channel
     client.subscribe(channel)
-    print("[INFO] Ready to listen to Blackbeard's instructions.")
 
 
 def on_message(client, userdata, msg):
@@ -27,7 +26,7 @@ def on_message(client, userdata, msg):
     message = str(msg.payload)
 
     # Display message while removing unnecessary characters
-    print("[BLACKBEARD] " + message[2:-1])
+    print(message[2:-1])
 
 
 # Setting up server and channel
