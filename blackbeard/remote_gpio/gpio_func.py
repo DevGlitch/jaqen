@@ -4,6 +4,15 @@ from time import sleep
 import numpy as np
 
 
+# PI ZERO GPIO MODES MAP(0=input, 1=output, 4=ALT0)
+
+# 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+# 4  4  4  4  0  1  1  0  0  0  0  0  0  0  4  4
+
+# 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+#  1  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0
+
+
 def connect_remote_gpio(host_ip):
     """ Connect to remote GPIO host
     :param host_ip: IP address of your raspberry pi
