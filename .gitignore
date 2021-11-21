@@ -132,3 +132,4 @@ dmypy.json
 .idea/
 
 *.csv
+blackbeard/object_detection/yolo/weights/yolov3.weights
