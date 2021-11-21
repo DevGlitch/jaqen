@@ -56,13 +56,13 @@ def labels_colors(obj_labels):
 
 
 def object_detection(
-    net, obj_labels, image, r_type="obj_list", colors=None, out=None, cuda=False
+    net, obj_labels, image, debug=False, colors=None, out=None, cuda=False
 ):
     """Running YOLO on a video or stream to detect objects
     :param net: loaded darknet model and config file
     :param obj_labels: loaded object labels of the model
     :param image: image from OpenCV video capture
-    :param r_type: the type of output wanted (obj_list or bounding_box)
+    :param debug: debug view parameter
     :param colors: list of colors from labels_colors function
     :param out: video output file details from write_out_video_init function
     :param cuda: OpenCV with or without CUDA support
@@ -131,7 +131,7 @@ def object_detection(
     # If at least one object has been detected
     if len(NMS) > 0:
 
-        if r_type == "obj_list":
+        if debug is False:
 
             # List objects where it stores the obj_names labels detected in the image
             objects = []
@@ -145,7 +145,10 @@ def object_detection(
             # Yielding list of the detected objects
             yield objects
 
-        if r_type == "bounding_box":
+        if debug is True:
+
+            # List objects where it stores the obj_names labels detected in the image
+            objects = []
 
             for i in NMS.flatten():
 
@@ -172,13 +175,18 @@ def object_detection(
                     thickness=2,
                 )
 
+                # Appending to the object list
+                objects += [f"{obj_labels[labels[i]]}"]
+
             if out is not None:
                 # Write image to output video file
                 # Uncomment this line below if you need to save the output to a video
                 out.write(image)
 
             # Open image to show the output with detected objects
-            cv2.imshow("Image", image)
+            # cv2.imshow("Image", image)
+
+            yield image, objects
 
     # For debug
     else:
