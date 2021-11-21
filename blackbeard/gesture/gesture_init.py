@@ -5,7 +5,7 @@ import time
 
 
 # load model
-tflite_save_path = 'gesture/model/model.tflite'
+tflite_save_path = "gesture/model/model.tflite"
 interpreter = tf.lite.Interpreter(model_path=tflite_save_path)
 interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
@@ -33,10 +33,16 @@ def gesture_preprocess(landmark):
         lm_y = np.append(lm_y, hlm.y)
         lm_z = np.append(lm_z, hlm.z)
     data_gest = [lm_x, lm_y, lm_z]
-    x_rng, y_rng, z_rng = lm_x.max() - lm_x.min(), lm_y.max() - lm_y.min(), lm_z.max() - lm_z.min()
-    data_gest = np.ravel([(k - k.min()) / (k.max() - k.min()) for i, k in enumerate(data_gest)])
+    x_rng, y_rng, z_rng = (
+        lm_x.max() - lm_x.min(),
+        lm_y.max() - lm_y.min(),
+        lm_z.max() - lm_z.min(),
+    )
+    data_gest = np.ravel(
+        [(k - k.min()) / (k.max() - k.min()) for i, k in enumerate(data_gest)]
+    )
     data_gest = np.append(data_gest, [x_rng, y_rng, z_rng])
-    return data_gest.astype('float32')
+    return data_gest.astype("float32")
 
 
 def gesture_inference(data, confidence=0.95):
@@ -47,16 +53,18 @@ def gesture_inference(data, confidence=0.95):
     param confidence: float - threshold for inference
     return: int class
     """
-    interpreter.set_tensor(input_details[0]['index'], np.array([data]))
+    interpreter.set_tensor(input_details[0]["index"], np.array([data]))
     interpreter.invoke()
-    tflite_results = interpreter.get_tensor(output_details[0]['index'])
+    tflite_results = interpreter.get_tensor(output_details[0]["index"])
     inf_idx = np.argmax(np.squeeze(tflite_results))
     if np.squeeze(tflite_results)[inf_idx] < confidence:
         return -1
     return inf_idx
 
 
-def gesture_pipeline(image, gest_time, hands, mp_hands, mp_drawing, mp_drawing_styles, debug=True):
+def gesture_pipeline(
+    image, gest_time, hands, mp_hands, mp_drawing, mp_drawing_styles, debug=True
+):
     """
     param image: stream image
     param gest_time: timer
@@ -65,7 +73,7 @@ def gesture_pipeline(image, gest_time, hands, mp_hands, mp_drawing, mp_drawing_s
     return image: drawn image
     return time: updated timer
     """
-    inf_class = {-1: 'None', 0: 'Hit', 1: 'Stand', 2: 'Split', 3: 'Reset'}
+    inf_class = {-1: "None", 0: "Hit", 1: "Stand", 2: "Split", 3: "Reset"}
     inf_class_idx = -1
 
     image.flags.writeable = False
@@ -89,7 +97,8 @@ def gesture_pipeline(image, gest_time, hands, mp_hands, mp_drawing, mp_drawing_s
                         hand_landmarks,
                         mp_hands.HAND_CONNECTIONS,
                         mp_drawing_styles.get_default_hand_landmarks_style(),
-                        mp_drawing_styles.get_default_hand_connections_style())
+                        mp_drawing_styles.get_default_hand_connections_style(),
+                    )
     else:
         gest_time = time.time()
     return inf_class[inf_class_idx], image, gest_time

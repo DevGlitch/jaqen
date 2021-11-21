@@ -118,6 +118,6 @@ def img_object_detection_box(img_path, config_path, weights_path, labels_path):
     obj_names.close()
 
     # Open image to show the output with detected objects
-    cv2.namedWindow('Image', cv2.WINDOW_NORMAL)
+    cv2.namedWindow("Image", cv2.WINDOW_NORMAL)
     cv2.imshow("Image", read_img)
     cv2.waitKey(0)

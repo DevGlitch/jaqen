@@ -59,7 +59,9 @@ def stream_object_detection_text(rtsp_url, config_path, weights_path, labels_pat
 
         # Creating a 4-dimensional blob from image
         # SwapRB to True increase classification accuracy
-        blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416), swapRB=True, crop=False)
+        blob = cv2.dnn.blobFromImage(
+            image, 1 / 255.0, (416, 416), swapRB=True, crop=False
+        )
         net.setInput(blob)
 
         # Putting blob as the input of the network
@@ -116,9 +118,7 @@ def stream_object_detection_text(rtsp_url, config_path, weights_path, labels_pat
             # Add each object detected to the list objects
             for i in NMS.flatten():
 
-                objects += [
-                    f"{obj_labels[labels[i]]}"
-                ]
+                objects += [f"{obj_labels[labels[i]]}"]
 
             yield objects
 

@@ -55,7 +55,9 @@ def labels_colors(obj_labels):
     return colors
 
 
-def object_detection(net, obj_labels, image, r_type="obj_list", colors=None, out=None, cuda=0):
+def object_detection(
+    net, obj_labels, image, r_type="obj_list", colors=None, out=None, cuda=0
+):
     """Running YOLO on a video or stream to detect objects
     :param net: loaded darknet model and config file
     :param obj_labels: loaded object labels of the model
@@ -155,12 +157,18 @@ def object_detection(net, obj_labels, image, r_type="obj_list", colors=None, out
                 cv2.rectangle(image, (x, y), (x + w, y + h), color=color, thickness=2)
 
                 # Add label to the bounding box
-                text = "{}: {:.4f}".format(obj_labels[labels[i]], probabilities[i])  # w/ probabilities
+                text = "{}: {:.4f}".format(
+                    obj_labels[labels[i]], probabilities[i]
+                )  # w/ probabilities
                 # text = "{}".format(obj_labels[labels[i]])  # w/o probabilities
                 cv2.putText(
-                    image, text, (x, y - 5),
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.5,
-                    color=color, thickness=2
+                    image,
+                    text,
+                    (x, y - 5),
+                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=0.5,
+                    color=color,
+                    thickness=2,
                 )
 
             if out is not None:

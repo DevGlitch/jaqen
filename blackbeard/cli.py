@@ -67,10 +67,11 @@ def main():
     print("[INFO] Blackbeard is running...")
 
     with mp_hands.Hands(
-            max_num_hands=1,
-            model_complexity=1,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5) as hands:
+        max_num_hands=1,
+        model_complexity=1,
+        min_detection_confidence=0.5,
+        min_tracking_confidence=0.5,
+    ) as hands:
 
         # timing
         gest_time = time.time()  # gesture timer
@@ -96,13 +97,9 @@ def main():
             ########################################################
             # ############## START GESTURE PIPELINE #############  #
 
-            gest_class, image, gest_time = gesture_pipeline(image,
-                                                            gest_time,
-                                                            hands,
-                                                            mp_hands,
-                                                            mp_drawing,
-                                                            mp_drawing_styles,
-                                                            debug)
+            gest_class, image, gest_time = gesture_pipeline(
+                image, gest_time, hands, mp_hands, mp_drawing, mp_drawing_styles, debug
+            )
 
             # ############### END GESTURE PIPELINE ##############  #
             ########################################################
@@ -111,16 +108,40 @@ def main():
             # ######## START BLACKJACK STRATEGY PIPELINE ########  #
 
             game.game_update(card="", gest=gest_class)
-            
+
             # ######### END BLACKJACK STRATEGY PIPELINE #########  #
             ########################################################
 
             # debug view
             if debug:
-                cv2.putText(image, f"Gesture: {gest_class}", (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-                cv2.putText(image, f"Count: {game.count}", (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-                cv2.putText(image, f"Opt Action: {game.opt}", (0, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-                cv2.imshow('Debug View', image)
+                cv2.putText(
+                    image,
+                    f"Gesture: {gest_class}",
+                    (0, 25),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9,
+                    (36, 255, 12),
+                    2,
+                )
+                cv2.putText(
+                    image,
+                    f"Count: {game.count}",
+                    (0, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9,
+                    (36, 255, 12),
+                    2,
+                )
+                cv2.putText(
+                    image,
+                    f"Opt Action: {game.opt}",
+                    (0, 75),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9,
+                    (36, 255, 12),
+                    2,
+                )
+                cv2.imshow("Debug View", image)
                 cv2.waitKey(5)
 
             # Command to stop Blackbeard

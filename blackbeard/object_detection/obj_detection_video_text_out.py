@@ -50,7 +50,9 @@ def vid_object_detection_txt(vid_path, config_path, weights_path, labels_path):
 
         # Creating a 4-dimensional blob from image
         # SwapRB to True increase classification accuracy
-        blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416), swapRB=True, crop=False)
+        blob = cv2.dnn.blobFromImage(
+            image, 1 / 255.0, (416, 416), swapRB=True, crop=False
+        )
         net.setInput(blob)
 
         # Putting blob as the input of the network
@@ -112,9 +114,7 @@ def vid_object_detection_txt(vid_path, config_path, weights_path, labels_path):
 
             for i in NMS.flatten():
 
-                objects += [
-                    f"{obj_labels[labels[i]]}"
-                ]
+                objects += [f"{obj_labels[labels[i]]}"]
 
                 # print("The objects are:\n", objects)
 
