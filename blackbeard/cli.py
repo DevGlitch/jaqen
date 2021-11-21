@@ -43,7 +43,9 @@ def main():
 
     # INFO START
     print("[INFO] Starting Blackbeard...")  # Displayed on PC Command Line
-    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Starting Blackbeard...")  # Displayed on Raspberry Pi Command Line
+    send_msg_by_mqtt(
+        pi_ip, pi_channel, "[INFO] Starting Blackbeard..."
+    )  # Displayed on Raspberry Pi Command Line
 
     # Load Object Detection
     print("[INFO] Loading Object Detection...")
@@ -78,13 +80,14 @@ def main():
         for detected_objects in object_detection(net, obj_labels, image, cuda=1):
 
             # PC
-            print("[INFO] Card Detected:", detected_objects)
             msg = "[INFO] Card Detected:" + str(detected_objects)
             print(msg)
             send_msg_by_mqtt(pi_ip, pi_channel, msg)
 
             print("---------------------------------------------")
-            send_msg_by_mqtt(pi_ip, pi_channel, "----------------------------------------")
+            send_msg_by_mqtt(
+                pi_ip, pi_channel, "----------------------------------------"
+            )
 
         # ########## END OBJECT DETECTION PIPELINE ##########  #
         ########################################################

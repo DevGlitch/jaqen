@@ -10,11 +10,11 @@ import paho.mqtt.client as mqtt
 
 
 def on_connect(client, userdata, flags, rc):
-    """ When launching mqtt and receiving response from the server
+    """When launching mqtt and receiving response from the server
     :return: displaying connection message
     """
     if rc == 0:
-        print("[INFO] MQTT Client successfully connected (code "+str(rc) + ").")
+        print("[INFO] MQTT Client successfully connected (code " + str(rc) + ").")
         # Subscribing to the channel
         client.subscribe(channel)
     else:
@@ -31,7 +31,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    """ When a message is received from the server
+    """When a message is received from the server
     :return: displaying server message
     """
     # Convert byte message to string

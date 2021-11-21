@@ -70,7 +70,9 @@ def img_object_detection_txt(img_path, config_path, weights_path, labels_path):
             if prob > 0.5:
 
                 # Working on each bounding box of the grid created by YOLO
-                grid_box = detection[:4] * np.array([img_col, img_row, img_col, img_row])
+                grid_box = detection[:4] * np.array(
+                    [img_col, img_row, img_col, img_row]
+                )
                 (X, Y, width, height) = grid_box.astype("int")
                 x = X - (width / 2)
                 y = Y - (height / 2)
@@ -93,9 +95,7 @@ def img_object_detection_txt(img_path, config_path, weights_path, labels_path):
 
         # Add each object detected to the list objects
         for i in NMS.flatten():
-            objects += [
-                f"{obj_labels[labels[i]]}"
-            ]
+            objects += [f"{obj_labels[labels[i]]}"]
         # Potential for future improvement if needed: regroup same labels together + add a count for them
 
         # How many objects were found

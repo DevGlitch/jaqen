@@ -47,7 +47,9 @@ def vid_object_detection_box(vid_path, config_path, weights_path, labels_path):
 
         # Creating a 4-dimensional blob from image
         # SwapRB to True increase classification accuracy
-        blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (416, 416), swapRB=True, crop=False)
+        blob = cv2.dnn.blobFromImage(
+            image, 1 / 255.0, (416, 416), swapRB=True, crop=False
+        )
         net.setInput(blob)
 
         # Putting blob as the input of the network
@@ -115,12 +117,18 @@ def vid_object_detection_box(vid_path, config_path, weights_path, labels_path):
                 cv2.rectangle(image, (x, y), (x + w, y + h), color=color, thickness=2)
 
                 # Add label to the bounding box
-                text = "{}: {:.4f}".format(obj_labels[labels[i]], probabilities[i])  # w/ probabilities
+                text = "{}: {:.4f}".format(
+                    obj_labels[labels[i]], probabilities[i]
+                )  # w/ probabilities
                 # text = "{}".format(obj_labels[labels[i]])  # w/o probabilities
                 cv2.putText(
-                    image, text, (x, y - 5),
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.5,
-                    color=color, thickness=2
+                    image,
+                    text,
+                    (x, y - 5),
+                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=0.5,
+                    color=color,
+                    thickness=2,
                 )
 
             out.write(image)

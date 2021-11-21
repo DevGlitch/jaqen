@@ -14,7 +14,7 @@ import numpy as np
 
 
 def connect_remote_gpio(host_ip):
-    """ Connect to remote GPIO host
+    """Connect to remote GPIO host
     :param host_ip: IP address of your raspberry pi
     :return: factory object
     """
@@ -23,7 +23,7 @@ def connect_remote_gpio(host_ip):
 
 
 def turn_led_on_off(pin, factory, blink, time_on=0.5, time_off=1):
-    """ Turn on and off specific LED
+    """Turn on and off specific LED
     :param pin: GPIO pin number the LED is connected to
     :param factory: PiGPIOFactory Host
     :param blink: Number of times the led should blink
@@ -43,7 +43,7 @@ def turn_led_on_off(pin, factory, blink, time_on=0.5, time_off=1):
 
 
 def button_wait_for_press(pin, factory, timeout=None):
-    """ Wait for button to be pressed
+    """Wait for button to be pressed
     :param pin: GPIO pin number the button is connected to
     :param factory: PiGPIOFactory Host
     :param timeout: Number of seconds to wait before proceeding (None = Wait indefinitely)
@@ -57,7 +57,7 @@ def button_wait_for_press(pin, factory, timeout=None):
 
 
 def button_wait_for_release(pin, factory, timeout=None):
-    """ Wait for button to be released
+    """Wait for button to be released
     :param pin: GPIO pin number the button is connected to
     :param factory: PiGPIOFactory Host
     :param timeout: Number of seconds to wait before proceeding (None = Wait indefinitely)

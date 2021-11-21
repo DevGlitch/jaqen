@@ -7,7 +7,7 @@ directory_path = r"C:\Users\Nico\darknet\build\darknet\x64\data\obj"
 
 with open("output.txt", "w") as f:
 
-    files = glob.glob(directory_path + '/**/*.jpg', recursive=True)
+    files = glob.glob(directory_path + "/**/*.jpg", recursive=True)
 
     for file in files:
 
