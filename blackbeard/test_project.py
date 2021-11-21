@@ -1,10 +1,10 @@
 from unittest import TestCase
-from object_detection.obj_detection_img_text_out import *
+from blackbeard.object_detection.obj_detection_img_text_out import *
 
-# from object_detection.obj_detection_img_box_out import *
+# from blackbeard.object_detection.obj_detection_img_box_out import *
 
 
-# YOLOV3 & COCO for testing function
+# YOLOV3 & COCO for testing functions
 config_path = "object_detection/yolo/cfg/yolov3.cfg"
 weights_path = "object_detection/yolo/weights/yolov3.weights"  # wget https://pjreddie.com/media/files/yolov3.weights
 labels_path = "object_detection/yolo/obj_names/coco.names"  # COCO Labels (https://cocodataset.org/)

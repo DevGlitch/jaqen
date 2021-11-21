@@ -31,7 +31,6 @@ class Hand:
     def hand_type(self):
         """
         determine hand type to apply different rules
-
         :return: str - "pair" or "soft" or "hard" or "none"
         """
         hand_size = len(self.hand)
@@ -58,7 +57,6 @@ class Hand:
     def hand_sum(self, player="player"):
         """
         calculates max sum of hand
-
         :param player: str - player/dealer
         :return points: int - max sum
         """
@@ -106,7 +104,6 @@ class Hand:
     def optAction(self, decks_n=1):
         """
         Optimal action
-
         :return: str - optimal action
         """
         if self.phase == 1:
@@ -175,7 +172,6 @@ class Round(Hand):
 class Game(Round):
     """
     Game per deck
-
     cards: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     """
 
@@ -192,7 +188,6 @@ class Game(Round):
     def counter(self, card):
         """
         counting rules
-
         :param card: str - seen unique card
         :return: none
         """
@@ -207,7 +202,6 @@ class Game(Round):
         """
         check for unique cards. Moves blackjack logic along with unique cards
         updates available card list
-
         :param card: str - detected card
         :param gest: str - hit/stand/reset
         """
@@ -236,7 +230,6 @@ class Game(Round):
     def bet_size(self):
         """
         Determines how much to bet
-
         :return: int - betting amount
         """
         if self.count < 2:

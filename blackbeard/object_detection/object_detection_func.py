@@ -56,16 +56,16 @@ def labels_colors(obj_labels):
 
 
 def object_detection(
-    net, obj_labels, image, r_type="obj_list", colors=None, out=None, cuda=0
+    net, obj_labels, image, r_type="obj_list", colors=None, out=None, cuda=False
 ):
     """Running YOLO on a video or stream to detect objects
     :param net: loaded darknet model and config file
     :param obj_labels: loaded object labels of the model
     :param image: image from OpenCV video capture
-    :param in_type: the type of input given - video(works for stream too) or image
     :param r_type: the type of output wanted (obj_list or bounding_box)
     :param colors: list of colors from labels_colors function
     :param out: video output file details from write_out_video_init function
+    :param cuda: OpenCV with or without CUDA support
     :return: detected objects
     :rtype: list or OpenCV window
     """
@@ -83,7 +83,8 @@ def object_detection(
 
     # Getting each layer name
     layer_name = net.getLayerNames()
-    if cuda:
+    # OpenCV with or without CUDA support(2D-array vs 1D-array being returned)
+    if cuda is True:
         layer_name = [layer_name[i - 1] for i in net.getUnconnectedOutLayers()]
     else:
         layer_name = [layer_name[i[0] - 1] for i in net.getUnconnectedOutLayers()]

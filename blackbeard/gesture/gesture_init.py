@@ -20,7 +20,6 @@ def gesture_preprocess(landmark):
     Y (21): 21-41
     Z (21): 42-62
     X,Y,Z range (3): 63-65
-
     params landmark: mediapipe landmark for 1 hand
     params label: str
     return: np.array (1,66)
@@ -48,7 +47,6 @@ def gesture_preprocess(landmark):
 def gesture_inference(data, confidence=0.95):
     """
     inference
-
     param data: np.array
     param confidence: float - threshold for inference
     return: int class
