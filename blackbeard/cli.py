@@ -1,4 +1,7 @@
 from object_detection.object_detection_func import *
+from remote_gpio.gpio_func import *
+from mqtt.mqtt_func import *
+from gpiozero import Button
 import keyboard
 import mediapipe as mp
 from gesture.gesture_init import gesture_pipeline
@@ -19,8 +22,20 @@ def main():
     weights_path = "../blackbeard/object_detection/yolo/weights/blackbeard_yolov4-tiny-obj_170000.weights"
     labels_path = "../blackbeard/object_detection/yolo/obj_names/blackbeard.names"
 
+    # Raspberry Pi IP Address
+    pi_ip = "YOUR_PI_IP_ADDRESS"
+
     # RTSP Stream URL
-    rtsp_url = "rtsp://192.168.1.98:8554/unicast"
+    rtsp_url = "rtsp://" + pi_ip + ":8554/unicast"
+
+    # MQTT channel
+    pi_channel = "blackbeard"
+
+    # Connecting to GPIO remotely
+    factory = connect_remote_gpio(pi_ip)
+    # GPIO22 - Turn the backlight on and off
+    # GPIO23 & GPIO24 - Two temporary buttons next to the display
+    stop_button = Button(24, pin_factory=factory)
 
     # Debug view
     debug = True
@@ -28,18 +43,28 @@ def main():
     # ################### END - USER DEFINED FILES ################### #
     ####################################################################
 
+    # Waiting for Button GPIO23 to be press to start Blackbeard
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Press Start.")
+    print("[INFO] Press Start.")
+    button_wait_for_press(23, factory)  # Top button
+
     ####################################################################
     # ###################### START - BLACKBEARD ###################### #
 
     # INFO START
-    print("[INFO] Starting Blackbeard...")
+    print("[INFO] Starting Blackbeard...")  # Displayed on PC Command Line
+    send_msg_by_mqtt(
+        pi_ip, pi_channel, "[INFO] Starting Blackbeard..."
+    )  # Displayed on Raspberry Pi Command Line
 
     # Load Object Detection
     print("[INFO] Loading Object Detection...")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Loading Object Detection...")
     net = load_yolo(config_path, weights_path)
     obj_names, obj_labels = load_labels(labels_path)
     sleep(1)
     print("[INFO] Object Detection Loaded.")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Object Detection Loaded.")
 
     # Load Gesture Detection
     print("[INFO] Loading Gesture Detection...")
@@ -59,18 +84,22 @@ def main():
 
     # Capture video stream from RTSP URL
     print("[INFO] Stream Capture Starting...")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Stream Capture Starting...")
     stream_video = cv2.VideoCapture(rtsp_url)
     sleep(1)
     print("[INFO] Stream Capture Started.")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Stream Capture Started.")
 
     # INFO READY
     print("[INFO] Blackbeard is running...")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Blackbeard is running...")
 
     with mp_hands.Hands(
-            max_num_hands=1,
-            model_complexity=1,
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5) as hands:
+        max_num_hands=1,
+        model_complexity=1,
+        min_detection_confidence=0.5,
+        min_tracking_confidence=0.5,
+    ) as hands:
 
         # timing
         gest_time = time.time()  # gesture timer
@@ -84,10 +113,17 @@ def main():
             # ######### START OBJECT DETECTION PIPELINE #########  #
 
             # Get detected objects from stream
-            # for detected_objects in object_detection(net, obj_labels, image, cuda=1):
-            #
-            #     print("[INFO] Card Detected:", detected_objects)  # for debug
-            #     print("---------------------------------------------")  # for debug
+            for detected_objects in object_detection(net, obj_labels, image, cuda=1):
+
+                msg = "[INFO] Card Detected:" + str(detected_objects)
+                print(msg)
+                send_msg_by_mqtt(pi_ip, pi_channel, msg)
+
+                print("---------------------------------------------")
+                send_msg_by_mqtt(
+                    pi_ip, pi_channel, "----------------------------------------"
+                )
+
             # add timer
 
             # ########## END OBJECT DETECTION PIPELINE ##########  #
@@ -96,13 +132,9 @@ def main():
             ########################################################
             # ############## START GESTURE PIPELINE #############  #
 
-            gest_class, image, gest_time = gesture_pipeline(image,
-                                                            gest_time,
-                                                            hands,
-                                                            mp_hands,
-                                                            mp_drawing,
-                                                            mp_drawing_styles,
-                                                            debug)
+            gest_class, image, gest_time = gesture_pipeline(
+                image, gest_time, hands, mp_hands, mp_drawing, mp_drawing_styles, debug
+            )
 
             # ############### END GESTURE PIPELINE ##############  #
             ########################################################
@@ -111,21 +143,52 @@ def main():
             # ######## START BLACKJACK STRATEGY PIPELINE ########  #
 
             game.game_update(card="", gest=gest_class)
-            
+
             # ######### END BLACKJACK STRATEGY PIPELINE #########  #
             ########################################################
 
             # debug view
             if debug:
-                cv2.putText(image, f"Gesture: {gest_class}", (0, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-                cv2.putText(image, f"Count: {game.count}", (0, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-                cv2.putText(image, f"Opt Action: {game.opt}", (0, 75), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (36, 255, 12), 2)
-                cv2.imshow('Debug View', image)
+                cv2.putText(
+                    image,
+                    f"Gesture: {gest_class}",
+                    (0, 25),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9,
+                    (36, 255, 12),
+                    2,
+                )
+                cv2.putText(
+                    image,
+                    f"Count: {game.count}",
+                    (0, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9,
+                    (36, 255, 12),
+                    2,
+                )
+                cv2.putText(
+                    image,
+                    f"Opt Action: {game.opt}",
+                    (0, 75),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9,
+                    (36, 255, 12),
+                    2,
+                )
+                # add card detected
+                cv2.imshow("Debug View", image)
                 cv2.waitKey(5)
 
-            # Command to stop Blackbeard
+            # Commands to stop Blackbeard
             if keyboard.is_pressed("q"):
                 print("[INFO] Closing Blackbeard...")
+                send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Closing Blackbeard...")
+                break
+
+            elif stop_button.is_held:
+                print("[INFO] Closing Blackbeard...")
+                send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Closing Blackbeard...")
                 break
 
     sleep(1)
@@ -140,11 +203,19 @@ def main():
     stream_video.release()
     sleep(1)
     print("[INFO] Video stream released.")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Video stream released.")
 
     # ####################### END - BLACKBEARD ####################### #
     ####################################################################
 
     print("[INFO] Blackbeard closed.")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Blackbeard closed.")
+
     print("---------------------------------------------")
+    send_msg_by_mqtt(pi_ip, pi_channel, "----------------------------------------")
+
     print("[INFO] Thank you for using Blackbeard!")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Thank you for using Blackbeard!")
+
     print("[INFO] Developed by codejacktsu & DevGlitch.")
+    send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] by codejacktsu & DevGlitch")

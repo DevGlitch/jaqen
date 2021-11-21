@@ -55,15 +55,17 @@ def labels_colors(obj_labels):
     return colors
 
 
-def object_detection(net, obj_labels, image, r_type="obj_list", colors=None, out=None, cuda=0):
+def object_detection(
+    net, obj_labels, image, r_type="obj_list", colors=None, out=None, cuda=False
+):
     """Running YOLO on a video or stream to detect objects
     :param net: loaded darknet model and config file
     :param obj_labels: loaded object labels of the model
     :param image: image from OpenCV video capture
-    :param in_type: the type of input given - video(works for stream too) or image
     :param r_type: the type of output wanted (obj_list or bounding_box)
     :param colors: list of colors from labels_colors function
     :param out: video output file details from write_out_video_init function
+    :param cuda: OpenCV with or without CUDA support
     :return: detected objects
     :rtype: list or OpenCV window
     """
@@ -81,7 +83,8 @@ def object_detection(net, obj_labels, image, r_type="obj_list", colors=None, out
 
     # Getting each layer name
     layer_name = net.getLayerNames()
-    if cuda:
+    # OpenCV with or without CUDA support(2D-array vs 1D-array being returned)
+    if cuda is True:
         layer_name = [layer_name[i - 1] for i in net.getUnconnectedOutLayers()]
     else:
         layer_name = [layer_name[i[0] - 1] for i in net.getUnconnectedOutLayers()]
@@ -155,12 +158,18 @@ def object_detection(net, obj_labels, image, r_type="obj_list", colors=None, out
                 cv2.rectangle(image, (x, y), (x + w, y + h), color=color, thickness=2)
 
                 # Add label to the bounding box
-                text = "{}: {:.4f}".format(obj_labels[labels[i]], probabilities[i])  # w/ probabilities
+                text = "{}: {:.4f}".format(
+                    obj_labels[labels[i]], probabilities[i]
+                )  # w/ probabilities
                 # text = "{}".format(obj_labels[labels[i]])  # w/o probabilities
                 cv2.putText(
-                    image, text, (x, y - 5),
-                    fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.5,
-                    color=color, thickness=2
+                    image,
+                    text,
+                    (x, y - 5),
+                    fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=0.5,
+                    color=color,
+                    thickness=2,
                 )
 
             if out is not None:

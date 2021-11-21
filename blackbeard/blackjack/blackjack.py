@@ -19,20 +19,18 @@ class Hand:
     """
 
     def __init__(self):
-        """
-        """
+        """ """
         self.hand = []
         self.dealer = []
         self.htype = self.hand_type()
-        self.ptotal = self.hand_sum(player='player')
-        self.dtotal = self.hand_sum(player='dealer')
+        self.ptotal = self.hand_sum(player="player")
+        self.dtotal = self.hand_sum(player="dealer")
         self.action = -1
         self.opt = self.optAction()
 
     def hand_type(self):
         """
         determine hand type to apply different rules
-
         :return: str - "pair" or "soft" or "hard" or "none"
         """
         hand_size = len(self.hand)
@@ -56,14 +54,13 @@ class Hand:
             else:
                 return "hard"
 
-    def hand_sum(self, player='player'):
+    def hand_sum(self, player="player"):
         """
         calculates max sum of hand
-
         :param player: str - player/dealer
         :return points: int - max sum
         """
-        if player == 'player':
+        if player == "player":
             cur_hand = self.hand
         else:
             cur_hand = self.dealer
@@ -72,7 +69,7 @@ class Hand:
             points += 10
         return points
 
-    def add(self, card, player='player'):
+    def add(self, card, player="player"):
         """
         Dealing/Hit/Double action
         :param card: int - added new card
@@ -81,11 +78,11 @@ class Hand:
         """
         # if dealer empty, 1st card goes to dealer
         if not self.dealer:
-            player = 'dealer'
+            player = "dealer"
 
-        if player == 'dealer':
+        if player == "dealer":
             self.dealer.append(card)
-            self.dtotal = self.hand_sum(player='dealer')
+            self.dtotal = self.hand_sum(player="dealer")
         else:
             self.hand.append(card)
             self.htype = self.hand_type()
@@ -107,13 +104,14 @@ class Hand:
     def optAction(self, decks_n=1):
         """
         Optimal action
-
         :return: str - optimal action
         """
         if self.phase == 1:
-            action_space = {1: "Hit", 2: 'Stand', 3: 'Double', 4: 'Split'}
+            action_space = {1: "Hit", 2: "Stand", 3: "Double", 4: "Split"}
             basic_df = basic_strat.groupby("deck").get_group(decks_n)
-            filtered = basic_df[(basic_df['sum'] == self.ptotal) & (basic_df['type'] == self.htype)]
+            filtered = basic_df[
+                (basic_df["sum"] == self.ptotal) & (basic_df["type"] == self.htype)
+            ]
             return action_space[filtered[self.dealer[0]].values[0]]
         else:
             return "None"
@@ -150,7 +148,7 @@ class Round(Hand):
 
     def check_dealer(self):
         if self.dtotal < 17:
-            self.add(self.last_seen, player='dealer')
+            self.add(self.last_seen, player="dealer")
         if self.dtotal >= 17:
             # win/lose/bust
             self.new_round()
@@ -163,7 +161,7 @@ class Round(Hand):
     def round_update(self, card):
         if self.phase == 0:
             if card > 0:
-                self.add(card, player='player')
+                self.add(card, player="player")
                 self.check_bet()
         elif self.phase == 1:
             self.check_player()
@@ -174,7 +172,6 @@ class Round(Hand):
 class Game(Round):
     """
     Game per deck
-
     cards: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     """
 
@@ -191,7 +188,6 @@ class Game(Round):
     def counter(self, card):
         """
         counting rules
-
         :param card: str - seen unique card
         :return: none
         """
@@ -206,11 +202,10 @@ class Game(Round):
         """
         check for unique cards. Moves blackjack logic along with unique cards
         updates available card list
-
         :param card: str - detected card
         :param gest: str - hit/stand/reset
         """
-        if not card and gest=='None':
+        if not card and gest == "None":
             return
         self.gest_assign(gest=gest)
         if card and self.cards[card][1] == 1:
@@ -224,7 +219,7 @@ class Game(Round):
         """
         :param gest: str - None/Hit/Stand/Reset
         """
-        gest_key = {'Hit': 1, 'Stand': 2, 'Split': '3'}
+        gest_key = {"Hit": 1, "Stand": 2, "Split": "3"}
         if gest == "Reset":
             self.reset()
         elif gest == "None":
@@ -235,7 +230,6 @@ class Game(Round):
     def bet_size(self):
         """
         Determines how much to bet
-
         :return: int - betting amount
         """
         if self.count < 2:
