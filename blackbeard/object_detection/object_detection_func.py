@@ -84,7 +84,7 @@ def object_detection(
     # Getting each layer name
     layer_name = net.getLayerNames()
     # OpenCV with or without CUDA support(2D-array vs 1D-array being returned)
-    if cuda is True:
+    if cuda:
         layer_name = [layer_name[i - 1] for i in net.getUnconnectedOutLayers()]
     else:
         layer_name = [layer_name[i[0] - 1] for i in net.getUnconnectedOutLayers()]
@@ -108,7 +108,7 @@ def object_detection(
             # Selecting only detections that are superior to 70% probability
             # Anything below 70% is ignored as probability is too low
             # You can increase this to higher or lower probability if needed
-            if prob > 0.7:
+            if prob > 0.85:
 
                 # Working on each bounding box of the grid created by YOLO
                 grid_box = detection[:4] * np.array(

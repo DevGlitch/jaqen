@@ -24,6 +24,7 @@ def main():
 
     # Raspberry Pi IP Address
     pi_ip = "YOUR_PI_IP_ADDRESS"
+    # pi_ip = "192.168.1.98"
 
     # RTSP Stream URL
     rtsp_url = "rtsp://" + pi_ip + ":8554/unicast"
@@ -62,6 +63,7 @@ def main():
     send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Loading Object Detection...")
     net = load_yolo(config_path, weights_path)
     obj_names, obj_labels = load_labels(labels_path)
+    final_cards = set()
     sleep(1)
     print("[INFO] Object Detection Loaded.")
     send_msg_by_mqtt(pi_ip, pi_channel, "[INFO] Object Detection Loaded.")
@@ -103,6 +105,9 @@ def main():
 
         # timing
         gest_time = time.time()  # gesture timer
+        non_reset_time = time.time()  # reset timer
+        reset_time = 0
+        ob_time = time.time()  # object detection timer
 
         while stream_video.isOpened():
 
@@ -113,18 +118,21 @@ def main():
             # ######### START OBJECT DETECTION PIPELINE #########  #
 
             # Get detected objects from stream
-            for detected_objects in object_detection(net, obj_labels, image, cuda=1):
+            if (time.time() - ob_time) > 1.5:
+                for detected_objects in object_detection(net, obj_labels, image, cuda=1):
 
-                msg = "[INFO] Card Detected:" + str(detected_objects)
-                print(msg)
-                send_msg_by_mqtt(pi_ip, pi_channel, msg)
+                    # msg = "[INFO] Card Detected:" + str(set(detected_objects))
+                    # print(msg)
+                    # send_msg_by_mqtt(pi_ip, pi_channel, msg)
 
-                print("---------------------------------------------")
-                send_msg_by_mqtt(
-                    pi_ip, pi_channel, "----------------------------------------"
-                )
-
-            # add timer
+                    # print("---------------------------------------------")
+                    # send_msg_by_mqtt(
+                    #     pi_ip, pi_channel, "----------------------------------------"
+                    # )
+                    curr_cards = set(detected_objects)
+                    print(curr_cards)
+                    final_cards = curr_cards
+                ob_time = time.time()
 
             # ########## END OBJECT DETECTION PIPELINE ##########  #
             ########################################################
@@ -142,16 +150,48 @@ def main():
             ########################################################
             # ######## START BLACKJACK STRATEGY PIPELINE ########  #
 
-            game.game_update(card="", gest=gest_class)
+            # hot fix - reset
+            if gest_class != "Reset":
+                non_reset_time = time.time()
+            elif gest_class == "Reset":
+                reset_time = time.time() - non_reset_time
+                if reset_time > 3:
+                    gest_class = "Reset"
+                else:
+                    gest_class = "Reset-Pending"
+
+            # final_cards = set()
+            for card in final_cards:
+                game.game_update(card=card, gest=gest_class)
 
             # ######### END BLACKJACK STRATEGY PIPELINE #########  #
+            ########################################################
+
+            # ##################### MQTT MSG ####################  #
+
+            send_msg_by_mqtt(
+                pi_ip, pi_channel, f"Count: {game.count}"
+            )
+            send_msg_by_mqtt(
+                pi_ip, pi_channel, f"Next Bet: ${game.bet_size()}"
+            )
+            send_msg_by_mqtt(
+                pi_ip, pi_channel, f"Detected Action: {game.action} | Opt Action: {game.opt}"
+            )
+            send_msg_by_mqtt(
+                pi_ip, pi_channel, f"Player Cards: {game.hand} | Total: {game.ptotal}"
+            )
+            send_msg_by_mqtt(
+                pi_ip, pi_channel, f"Dealer Cards: {game.dealer} | Total: {game.dtotal}"
+            )
+
             ########################################################
 
             # debug view
             if debug:
                 cv2.putText(
                     image,
-                    f"Gesture: {gest_class}",
+                    f"Game Phase: {game.phase_label()}",
                     (0, 25),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.9,
@@ -160,7 +200,7 @@ def main():
                 )
                 cv2.putText(
                     image,
-                    f"Count: {game.count}",
+                    f"Count: {game.count} | Next Bet: ${game.bet_size()}",
                     (0, 50),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.9,
@@ -169,14 +209,40 @@ def main():
                 )
                 cv2.putText(
                     image,
-                    f"Opt Action: {game.opt}",
+                    f"Gesture: {gest_class} | Action: {game.action} | Opt Action: {game.opt}",
                     (0, 75),
                     cv2.FONT_HERSHEY_SIMPLEX,
                     0.9,
                     (36, 255, 12),
                     2,
                 )
-                # add card detected
+                cv2.putText(
+                    image,
+                    f"Player Cards: {game.hand} | Total: {game.ptotal}",
+                    (0, 100),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9,
+                    (36, 255, 12),
+                    2,
+                )
+                cv2.putText(
+                    image,
+                    f"Dealer Cards: {game.dealer} | Total: {game.dtotal}",
+                    (0, 125),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.9,
+                    (36, 255, 12),
+                    2,
+                )
+                # cv2.putText(
+                #     image,
+                #     f"Debug Etc: {round(non_reset_time,3)}| Left: {reset_time}",
+                #     (0, 150),
+                #     cv2.FONT_HERSHEY_SIMPLEX,
+                #     0.9,
+                #     (36, 255, 12),
+                #     2,
+                # )
                 cv2.imshow("Debug View", image)
                 cv2.waitKey(5)
 

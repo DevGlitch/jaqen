@@ -133,22 +133,21 @@ class Round(Hand):
         if self.n_cards == 3:
             self.phase += 1
 
-    def check_player(self):
+    def check_player(self, card=0):
         """
         Player's turn
         player actions: {1: "Hit", 2: 'Stand', 3: 'Double', 4: 'Split'}
         """
-        if self.action == 1:
-            self.add(self.last_seen)
+        if self.action == 1 and card:
+            self.add(card)
         elif self.action == 2:
-            print("stands")
             self.phase += 1
         if self.ptotal > 21:
             self.new_round()
 
-    def check_dealer(self):
-        if self.dtotal < 17:
-            self.add(self.last_seen, player="dealer")
+    def check_dealer(self, card=0):
+        if self.dtotal < 17 and card:
+            self.add(card, player="dealer")
         if self.dtotal >= 17:
             # win/lose/bust
             self.new_round()
@@ -159,14 +158,15 @@ class Round(Hand):
         super().__init__()
 
     def round_update(self, card):
-        if self.phase == 0:
+        if self.phase == 0:  # dealing
             if card > 0:
                 self.add(card, player="player")
                 self.check_bet()
-        elif self.phase == 1:
-            self.check_player()
+        elif self.phase == 1:  # player turn
+            self.opt = self.optAction()
+            self.check_player(card)
         elif self.phase == 2:
-            self.check_dealer()
+            self.check_dealer(card)  # dealer turn
 
 
 class Game(Round):
@@ -175,7 +175,7 @@ class Game(Round):
     cards: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     """
 
-    def __init__(self, cards, decks_n=1, debug=True):
+    def __init__(self, cards, decks_n=1, debug=False):
         """
         new game
         """
@@ -189,14 +189,16 @@ class Game(Round):
         """
         counting rules
         :param card: str - seen unique card
-        :return: none
+        # :return: none
+        :return: int card
         """
         num = self.cards[card][0]
         if 2 <= num <= 6:
             self.count -= 1 / self.decks_n
         elif num == 10 or num == 1:
             self.count += 1 / self.decks_n
-        self.last_seen = num
+        # self.last_seen = num
+        return num
 
     def game_update(self, card="", gest="None"):
         """
@@ -210,8 +212,14 @@ class Game(Round):
         self.gest_assign(gest=gest)
         if card and self.cards[card][1] == 1:
             self.cards[card][1] = 0
-            self.counter(card)
-        self.round_update(self.last_seen)
+            verified_card = self.counter(card)
+        else:
+            verified_card = 0
+        self.round_update(verified_card)
+        if self.phase==1:
+            self.opt = self.optAction()
+        else:
+            self.opt = "None"
         if self.debug:
             self.debug_print()
 
@@ -224,7 +232,7 @@ class Game(Round):
             self.reset()
         elif gest == "None":
             pass
-        else:
+        elif gest == "Hit" or gest == "Stand":
             self.action = gest_key[gest]
 
     def bet_size(self):
@@ -243,12 +251,19 @@ class Game(Round):
         self.count = 0
         self.min_bet = 10
         self.cards = {k: [v[0], 1] for k, v in self.cards.items()}
-        self.last_seen = 0
+        # self.last_seen = 0
+
+    def phase_label(self):
+        phases_dict = {0: "Setup", 1: "Player's turn", 2: "Dealer's turn"}
+        return phases_dict[self.phase]
 
     def debug_print(self):
-        print(f"Game Phase: {self.phase}")
+        print(f"--------------------------------------------")
+        print(f"Game Phase: {self.phase_label()}")
         print(f"Count: {self.count}")
-        print(f"Game Last Card: {self.last_seen}")
+        print(f"Next Bet: {self.bet_size()}")
+        # print(f"Detected Cards: {self.last_seen}")
         print(f"Player Action: {self.action}")
+        print(f"Player Optimal Action: {self.opt}")
         print(f"Player Hand: {self.hand} | {self.ptotal}")
         print(f"Dealer Hand: {self.dealer} | {self.dtotal}")
