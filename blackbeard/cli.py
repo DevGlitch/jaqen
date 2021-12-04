@@ -130,8 +130,6 @@ def main():
                     #     pi_ip, pi_channel, "----------------------------------------"
                     # )
                     curr_cards = set(detected_objects)
-                    print(curr_cards)
-                    final_cards = curr_cards
                 ob_time = time.time()
 
             # ########## END OBJECT DETECTION PIPELINE ##########  #
@@ -160,8 +158,7 @@ def main():
                 else:
                     gest_class = "Reset-Pending"
 
-            # final_cards = set()
-            for card in final_cards:
+            for card in curr_cards:
                 game.game_update(card=card, gest=gest_class)
 
             # ######### END BLACKJACK STRATEGY PIPELINE #########  #
