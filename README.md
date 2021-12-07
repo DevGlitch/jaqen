@@ -68,15 +68,21 @@ Follow the below instructions in order to run Blackbeard on your machine.
    ```
 
 ```sh
-   python 3 mqtt_client.py
+   python3 mqtt_client.py
    ```
 
 2. Start Blackbeard on your Desktop:
 
 ```sh
-   python __main_.py
+   python __main__.py
    ```
 
+### MQTT Message
+Count: advantage of player vs house. Higher the count, the more advantage the player has
+
+Opt Action: Optimal action
+
+Bet: Suggested next round's betting amount
 
 <!-- LICENSE -->
 ## License
