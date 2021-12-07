@@ -5,8 +5,6 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/DevGlitch/jaqen)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
-###!! Currently in development !!
-
 Team Members:
    * Nicolas Morant aka DevGlitch
    * Huayu (Jack) Tsu aka codejacktsu
@@ -23,38 +21,28 @@ Team Members:
 
 <!-- DESCRIPTION OF THE PROJECT -->
 ## Description
-Team Jaqen wants to build Blackbeard, a world class blackjack AI, that trains your ability to play blackjack 
-from a wearable device in real time. The challenges Blackbeard will face are as follow: object detection, 
+Team Jaqen wanted to build Blackbeard, a world class blackjack AI, that trains your ability to play blackjack 
+from a wearable device in real time. The challenges Blackbeard is facing are as follow: object detection, 
 object classification, mathematical probabilities, hand motion recognition, and more.
 
 Disclaimer: The device is intended for academic use or training purposes only. Card counting is not illegal under Federal, State, or Local law. 
+
 
 <!-- PROJECT REPORT-->
 ## Project Report
 https://github.com/DevGlitch/jaqen/tree/master/project_report/
 
-<!-- PROJECT PRESENTATION-->
-## Presentation
-ADD YOUTUBE VIDEO LINK HERE
 
-
-<!-- DEMO OF THE PROJECT -->
-## Demos
-https://github.com/DevGlitch/jaqen/tree/master/demos/
+<!-- PROJECT PRESENTATION & DEMO-->
+## Project Presentation & Demo
+https://youtu.be/R2JZ_oEcPRQ
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-Follow the below instructions in order to run ... on your machine.
+Follow the below instructions in order to run Blackbeard on your machine.
 
-
-### Prerequisites
-
-* ABC<br>
-  https://... <br>
-  This project was developed using ...<br>
-  
   
 ### Installation
 
@@ -64,32 +52,29 @@ Follow the below instructions in order to run ... on your machine.
    ```
 2. Install any missing packages. 
    + We recommend using a conda environment with Python 3.7.
-    
+   + Install all the missing packages on your machine 
+   + On the Raspeberry Pi:
+        - Setting up a RTSP feed is needed
+            + We used v42lrtspserver with h624
+            + Make sure to adjust the settings of the v42lrtspserver
+        - Put the mqtt_client.py file on your Pi
 
 ### Running
 
-1. Start ...
+1. Launch on the Raspberry Pi:
 
-
-2. Load ...
-
-
-3. Run any of the command below.<br>
-   Please make sure you are in the correct directory.
-   
-
-* #### ...
-
-This file ...
 ```sh
-   python abc.py
+   v42lrtspserver
    ```
 
-* #### ...
-
-This file ...
 ```sh
-   python xyz.py
+   python 3 mqtt_client.py
+   ```
+
+2. Start Blackbeard on your Desktop:
+
+```sh
+   python __main_.py
    ```
 
 
