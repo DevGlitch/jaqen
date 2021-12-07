@@ -157,7 +157,7 @@ class Round(Hand):
         self.n_cards = 0
         super().__init__()
 
-    def round_update(self, card):
+    def round_update(self, card=0):
         if self.phase == 0:  # dealing
             if card > 0:
                 self.add(card, player="player")
@@ -200,30 +200,30 @@ class Game(Round):
         # self.last_seen = num
         return num
 
-    def game_update(self, card="", gest="None"):
+    def game_update(self, card=""):
         """
         check for unique cards. Moves blackjack logic along with unique cards
         updates available card list
         :param card: str - detected card
         :param gest: str - hit/stand/reset
         """
-        if not card and gest == "None":
+        if not card:
             return
-        self.gest_assign(gest=gest)
+        # self.gest_assign(gest=gest)
         if card and self.cards[card][1] == 1:
             self.cards[card][1] = 0
             verified_card = self.counter(card)
         else:
             verified_card = 0
         self.round_update(verified_card)
-        if self.phase==1:
+        if self.phase == 1:
             self.opt = self.optAction()
         else:
             self.opt = "None"
         if self.debug:
             self.debug_print()
 
-    def gest_assign(self, gest="None"):
+    def gest_update(self, gest="None"):
         """
         :param gest: str - None/Hit/Stand/Reset
         """
@@ -234,6 +234,7 @@ class Game(Round):
             pass
         elif gest == "Hit" or gest == "Stand":
             self.action = gest_key[gest]
+        self.round_update()
 
     def bet_size(self):
         """

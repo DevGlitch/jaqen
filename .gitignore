@@ -133,3 +133,5 @@ dmypy.json
 
 *.csv
 blackbeard/object_detection/yolo/weights/yolov3.weights
+demos/FinalDemo.mp4
+demos/FinalDemoSlow.mp4
